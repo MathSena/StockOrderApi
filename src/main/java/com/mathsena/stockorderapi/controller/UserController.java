@@ -2,7 +2,6 @@ package com.mathsena.stockorderapi.controller;
 
 import com.mathsena.stockorderapi.model.User;
 import com.mathsena.stockorderapi.service.UserService;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "v1/api/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "v1/api/users")
 public class UserController {
     private final UserService userService;
 

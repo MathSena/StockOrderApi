@@ -1,9 +1,8 @@
 package com.mathsena.stockorderapi.controller;
 
 import com.mathsena.stockorderapi.dto.ItemDTO;
-import com.mathsena.stockorderapi.mappers.ItemMapper;
-import com.mathsena.stockorderapi.model.Item;
 import com.mathsena.stockorderapi.service.ItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +13,8 @@ import java.util.List;
 public class ItemController {
   private final ItemService itemService;
 
-  private final ItemMapper itemMapper;
-
-  public ItemController(ItemService itemService, ItemMapper itemMapper) {
+  public ItemController(ItemService itemService) {
     this.itemService = itemService;
-    this.itemMapper = itemMapper;
   }
 
   @GetMapping
@@ -27,39 +23,28 @@ public class ItemController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Item> getItemById(@PathVariable Long id) {
-    Item item = itemService.getItemById(id);
-    if (item != null) {
-      return ResponseEntity.ok(item);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
+    return itemService.getItemById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @PostMapping
   public ResponseEntity<ItemDTO> createItem(@RequestBody ItemDTO newItem) {
-    Item item = itemService.createItem(newItem);
-    ItemDTO itemDTO = itemMapper.toDto(item);
-    return ResponseEntity.ok(itemDTO);
+    ItemDTO createdItem = itemService.createItem(newItem);
+    return new ResponseEntity<>(createdItem, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Item> updateItem(
-      @PathVariable Long id, @RequestBody ItemDTO updatedItem) {
-    Item item = itemService.updateItem(id, updatedItem);
-    if (item != null) {
-      return ResponseEntity.ok(item);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<ItemDTO> updateItem(@PathVariable Long id, @RequestBody ItemDTO updatedItem) {
+    return itemService.updateItem(id, updatedItem)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-    if (itemService.deleteItem(id)) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+    return itemService.deleteItem(id) ? ResponseEntity.noContent().build()
+            : ResponseEntity.notFound().build();
   }
 }
