@@ -6,6 +6,7 @@ import com.mathsena.stockorderapi.model.Item;
 import com.mathsena.stockorderapi.repository.ItemRepository;
 import com.mathsena.stockorderapi.service.ItemService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,33 +25,32 @@ public class ItemServiceImpl implements ItemService {
   @Override
   public List<ItemDTO> getAllItems() {
     return itemRepository.findAll().stream()
-        .map(itemMapper::toDto) // Use a lambda expression here
-        .collect(Collectors.toList());
+            .map(itemMapper::toDto)
+            .collect(Collectors.toList());
   }
 
   @Override
-  public Item getItemById(Long id) {
-    Optional<Item> item = itemRepository.findById(id);
-    return item.orElse(null);
+  public Optional<ItemDTO> getItemById(Long id) {
+    return itemRepository.findById(id)
+            .map(itemMapper::toDto);
   }
 
   @Override
-  public Item createItem(ItemDTO newItemDTO) {
+  public ItemDTO createItem(ItemDTO newItemDTO) {
     Item item = itemMapper.toEntity(newItemDTO);
-    return itemRepository.save(item);
+    return itemMapper.toDto(itemRepository.save(item));
   }
 
+  @Transactional
   @Override
-  public Item updateItem(Long id, ItemDTO updatedItemDTO) {
-    Optional<Item> itemOptional = itemRepository.findById(id);
-    if (itemOptional.isPresent()) {
-      Item item = itemOptional.get();
+  public Optional<ItemDTO> updateItem(Long id, ItemDTO updatedItemDTO) {
+    return itemRepository.findById(id).map(item -> {
       itemMapper.setItem(updatedItemDTO, item);
-      return itemRepository.save(item);
-    }
-    return null;
+      return itemMapper.toDto(itemRepository.save(item));
+    });
   }
 
+  @Transactional
   @Override
   public boolean deleteItem(Long id) {
     if (itemRepository.existsById(id)) {
