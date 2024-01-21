@@ -1,5 +1,8 @@
 package com.mathsena.stockorderapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,7 +12,8 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "customer_order")
+@Table(name = "orders")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order {
 
   @Id
@@ -19,14 +23,13 @@ public class Order {
   @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime creationDate;
-
-  @OneToMany(mappedBy = "order")
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+  @JsonManagedReference("order-orderItem")
   private List<OrderItem> orderItems;
 
-  @Column(nullable = false)
-  private Integer quantity;
-
-  @ManyToOne
-  @JoinColumn(name = "user_id")
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JsonBackReference("user-order")
   private User user;
+
+  private boolean completed = false;
 }
