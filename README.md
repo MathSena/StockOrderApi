@@ -210,7 +210,7 @@ To start the Spring Boot application in IntelliJ IDEA or Eclipse, follow these s
    ```shell
    mvn clean install
 
-   java -jar target/pt-0.0.1-SNAPSHOT.jar
+   java -jar target/StockOrderApi-0.0.1-SNAPSHOT.jar
 
    (CONTROL+C) to shutdown app
 
