@@ -1,5 +1,6 @@
 package com.mathsena.stockorderapi.dto;
 
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

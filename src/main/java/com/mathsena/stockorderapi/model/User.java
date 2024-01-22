@@ -1,8 +1,11 @@
 package com.mathsena.stockorderapi.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -15,7 +18,11 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotBlank(message = "Name cannot be blank")
   private String name;
+
+  @NotBlank(message = "Email cannot be blank")
+  @Email(message = "Email should be valid")
   private String email;
 
   @OneToMany(mappedBy = "user")

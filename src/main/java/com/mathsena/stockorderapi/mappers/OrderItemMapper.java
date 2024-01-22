@@ -7,12 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OrderItemMapper {
-  @Mapping(source = "order.id", target = "orderId")  // Adicione esta linha
   @Mapping(source = "item.id", target = "itemId")
   OrderItemDTO toDto(OrderItem orderItem);
 
   @Mapping(source = "itemId", target = "item.id")
   OrderItem toEntity(OrderItemDTO orderItemDto);
 }
-
-

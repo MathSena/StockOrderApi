@@ -1,4 +1,4 @@
-package com.mathsena.stockorderapi.service.impl;
+package com.mathsena.stockorderapi.service;
 
 
 import com.mathsena.stockorderapi.model.Order;
@@ -35,12 +35,12 @@ public class LoggingService {
 
   public void logEmailSent(User user, String message) {
     String logMessage = "Email sent successfully to: " + user.getEmail() + "\nMessage: " + message;
-    System.out.println(logMessage);
+    writeToLogFile(logMessage);
   }
 
   public void logError(String errorMessage) {
     String logMessage = "Error: " + errorMessage;
-    System.err.println(logMessage);
+    writeToLogFile(logMessage);
   }
 
   private void writeToLogFile(String message) {
