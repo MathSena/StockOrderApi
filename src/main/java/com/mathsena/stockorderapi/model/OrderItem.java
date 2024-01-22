@@ -1,8 +1,10 @@
 package com.mathsena.stockorderapi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
+
+import javax.persistence.Entity;
 
 @Data
 @Entity
@@ -21,10 +23,8 @@ public class OrderItem {
   @JsonBackReference
   private Item item;
 
-
   @Column(nullable = false)
   private Integer quantity;
 
   private Integer allocatedQuantity = 0;
-
 }

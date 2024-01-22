@@ -3,13 +3,12 @@ package com.mathsena.stockorderapi.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "orders")
@@ -33,3 +32,4 @@ public class Order {
 
   private boolean completed = false;
 }
+
