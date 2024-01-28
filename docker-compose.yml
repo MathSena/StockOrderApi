@@ -35,6 +35,64 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
 
+  postgres-server:
+    image: postgres:latest
+    volumes:
+      - zabbix-postgres-storage:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+    networks:
+      - broker-kafka
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "test"
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql
+    depends_on:
+      - postgres-server
+    environment:
+      DB_SERVER_HOST: "postgres-server"
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+    ports:
+      - "10051:10051"
+    networks:
+      - broker-kafka
+  prometheus:
+    image: prom/prometheus:v2.22.0  # Use a versão desejada
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Mapeamento do arquivo de configuração
+      - prometheus-data:/prometheus  # Persistência dos dados
+    ports:
+      - "9090:9090"  # Porta padrão do Prometheus
+    networks:
+      - broker-kafka
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent
+    depends_on:
+      - zabbix-server
+    environment:
+      ZABBIX_SERVER_HOST: "zabbix-server"
+    networks:
+      - broker-kafka
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - broker-kafka
+
+volumes:
+  zabbix-postgres-storage:
+  prometheus-data:
+
 networks:
   broker-kafka:
     driver: bridge

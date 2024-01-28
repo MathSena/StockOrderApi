@@ -1,0 +1,25 @@
+[2024-01-28T19:06:44.567638] Stock Movement: ID 1
+[2024-01-28T20:48:00.013371] Stock Movement: ID 1
+[2024-01-28T20:48:14.012835] Stock Movement: ID 2
+[2024-01-28T20:48:14.029413] Order completed: ID 1
+Error: Intentional error, configure your GMAIL with SMTP
+Error: Authentication failed; nested exception is javax.mail.AuthenticationFailedException: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials k14-20020adff28e000000b003392172fd60sm6282418wro.51 - gsmtp
+
+[2024-01-28T20:48:18.238043] Stock Movement: ID 3
+[2024-01-28T20:48:18.250848] Order is not completed: ID 2
+[2024-01-28T20:48:21.394461] Order is not completed: ID 3
+[2024-01-28T20:50:05.894596] Stock Movement: ID 1
+[2024-01-28T20:50:09.600343] Stock Movement: ID 2
+[2024-01-28T20:50:09.609442] Order completed: ID 1
+Error: Intentional error, configure your GMAIL with SMTP
+Error: Authentication failed; nested exception is javax.mail.AuthenticationFailedException: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials fa6-20020a05600c518600b0040ee8765901sm6373801wmb.43 - gsmtp
+
+[2024-01-28T21:31:52.966463] Stock Movement: ID 1
+[2024-01-28T21:31:55.581601] Stock Movement: ID 2
+[2024-01-28T21:31:55.591432] Order completed: ID 1
+Error: Intentional error, configure your GMAIL with SMTP
+Error: Authentication failed; nested exception is javax.mail.AuthenticationFailedException: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials b26-20020adf9b1a000000b0033924b4d1f9sm6389710wrc.94 - gsmtp
+

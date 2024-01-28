@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your-mail
-    password: your-pass
+    username: mathsenajp@gmail.com
+    password: fjur kofe fftz mzpu
     properties:
       mail:
         smtp:
@@ -51,4 +51,13 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
