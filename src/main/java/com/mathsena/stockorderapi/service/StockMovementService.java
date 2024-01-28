@@ -39,7 +39,6 @@ public class StockMovementService {
       StockMovementRepository stockMovementRepository,
       StockMovementMapper stockMovementMapper,
       ItemRepository itemRepository,
-      OrderItemRepository orderItemRepository,
       LoggingService loggingService,
       JavaMailSender javaMailSender,
       OrderRepository orderRepository,
