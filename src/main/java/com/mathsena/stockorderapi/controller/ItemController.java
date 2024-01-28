@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/v1/api/items")
 @Api(tags = "Item Controller", description = "Endpoints for managing items")
 public class ItemController {

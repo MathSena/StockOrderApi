@@ -1,5 +1,7 @@
 package com.mathsena.stockorderapi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mathsena.stockorderapi.dto.OrderDTO;
 import com.mathsena.stockorderapi.dto.OrderItemDTO;
 import com.mathsena.stockorderapi.dto.StockMovementDTO;
@@ -37,6 +39,9 @@ public class OrderService {
   private final LoggingService loggingService;
   private final StockMovementService stockMovementService;
 
+  private final KafkaProducerService kafkaProducerService;
+  private final ObjectMapper objectMapper;
+
   public OrderService(
       OrderRepository orderRepository,
       OrderMapper orderMapper,
@@ -47,7 +52,9 @@ public class OrderService {
       ItemRepository itemRepository,
       JavaMailSender javaMailSender,
       LoggingService loggingService,
-      StockMovementService stockMovementService) {
+      StockMovementService stockMovementService,
+      KafkaProducerService kafkaProducerService,
+      ObjectMapper objectMapper) {
     this.orderRepository = orderRepository;
     this.orderMapper = orderMapper;
     this.orderItemMapper = orderItemMapper;
@@ -58,6 +65,8 @@ public class OrderService {
     this.javaMailSender = javaMailSender;
     this.loggingService = loggingService;
     this.stockMovementService = stockMovementService;
+    this.kafkaProducerService = kafkaProducerService;
+    this.objectMapper = objectMapper;
   }
 
   public List<OrderDTO> getAllOrders() {
@@ -104,7 +113,7 @@ public class OrderService {
         log.info("Item {} does not have enough stock to fulfill the order", itemDTO.getItemId());
         log.info("The item will be aloocated with {} units", stockAvailable);
         isComplete =
-            false; // O pedido não pode ser completo se qualquer item não tiver estoque suficiente
+            false;
       }
 
       orderItems.add(orderItem);
@@ -124,7 +133,16 @@ public class OrderService {
       log.info("Order {} could not be completed due to insufficient stock", savedOrder.getId());
       loggingService.noOrderCompletion(savedOrder);
     }
-    return orderMapper.toDto(savedOrder);
+    try {
+      OrderDTO savedOrderDTO = orderMapper.toDto(savedOrder);
+      String orderJson = objectMapper.writeValueAsString(savedOrderDTO);
+      kafkaProducerService.sendMessageOrder(orderJson);
+      log.info("Order created event published to Kafka");
+    } catch (JsonProcessingException e) {
+      log.error("Error while serializing order data to JSON", e);
+    }
+
+      return orderMapper.toDto(savedOrder);
   }
 
   private void createStockMovement(Long itemId, int quantity) {
