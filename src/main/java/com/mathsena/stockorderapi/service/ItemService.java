@@ -45,7 +45,7 @@ public class ItemService {
 
     try {
       String itemJson = mapper.writeValueAsString(newItemDTO);
-      kafkaProducerService.sendMessage("item-created", itemJson);
+      kafkaProducerService.sendMessageItem(itemJson);
     } catch (Exception e) {
       e.printStackTrace();
     }

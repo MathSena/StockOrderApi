@@ -1,15 +1,10 @@
 spring:
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      acks: -1
+      bootstrap-servers: localhost:29092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: my-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   datasource:
     url: jdbc:postgresql://localhost:5432/stock-api
     driverClassName: org.postgresql.Driver
@@ -56,3 +51,4 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+

@@ -136,7 +136,7 @@ public class OrderService {
     try {
       OrderDTO savedOrderDTO = orderMapper.toDto(savedOrder);
       String orderJson = objectMapper.writeValueAsString(savedOrderDTO);
-      kafkaProducerService.sendMessage("order-created-topic", orderJson);
+      kafkaProducerService.sendMessageOrder(orderJson);
       log.info("Order created event published to Kafka");
     } catch (JsonProcessingException e) {
       log.error("Error while serializing order data to JSON", e);

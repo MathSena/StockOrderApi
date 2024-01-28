@@ -7,7 +7,6 @@ import com.mathsena.stockorderapi.dto.StockMovementDTO;
 import com.mathsena.stockorderapi.mappers.StockMovementMapper;
 import com.mathsena.stockorderapi.model.*;
 import com.mathsena.stockorderapi.repository.ItemRepository;
-import com.mathsena.stockorderapi.repository.OrderItemRepository;
 import com.mathsena.stockorderapi.repository.OrderRepository;
 import com.mathsena.stockorderapi.repository.StockMovementRepository;
 import javax.mail.internet.MimeMessage;
@@ -76,7 +75,7 @@ public class StockMovementService {
     try {
       StockMovementDTO savedStockMovementDTO = stockMovementMapper.toDto(stockMovement);
       String stockMovementJson = objectMapper.writeValueAsString(savedStockMovementDTO);
-      kafkaProducerService.sendMessage("stock-movement-created-topic", stockMovementJson);
+      kafkaProducerService.sendMessageStock(stockMovementJson);
       log.info("Stock movement created event published to Kafka");
     } catch (JsonProcessingException e) {
       log.error("Error while serializing stock movement data to JSON", e);
