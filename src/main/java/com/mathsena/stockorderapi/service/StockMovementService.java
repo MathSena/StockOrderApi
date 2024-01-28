@@ -1,5 +1,7 @@
 package com.mathsena.stockorderapi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mathsena.stockorderapi.dto.OrderItemDTO;
 import com.mathsena.stockorderapi.dto.StockMovementDTO;
 import com.mathsena.stockorderapi.mappers.StockMovementMapper;
@@ -30,6 +32,9 @@ public class StockMovementService {
 
   private final OrderRepository orderRepository;
 
+  private final KafkaProducerService kafkaProducerService;
+  private final ObjectMapper objectMapper;
+
   public StockMovementService(
       StockMovementRepository stockMovementRepository,
       StockMovementMapper stockMovementMapper,
@@ -37,13 +42,17 @@ public class StockMovementService {
       OrderItemRepository orderItemRepository,
       LoggingService loggingService,
       JavaMailSender javaMailSender,
-      OrderRepository orderRepository) {
+      OrderRepository orderRepository,
+      KafkaProducerService kafkaProducerService,
+      ObjectMapper objectMapper) {
     this.stockMovementRepository = stockMovementRepository;
     this.stockMovementMapper = stockMovementMapper;
     this.itemRepository = itemRepository;
     this.loggingService = loggingService;
     this.javaMailSender = javaMailSender;
     this.orderRepository = orderRepository;
+    this.kafkaProducerService = kafkaProducerService;
+    this.objectMapper = objectMapper;
   }
 
   public List<StockMovement> listAllStockMovements() {
@@ -64,6 +73,15 @@ public class StockMovementService {
 
     allocateStockToPendingOrders(itemId, stockMovement.getQuantity());
     loggingService.logStockMovement(stockMovement);
+
+    try {
+      StockMovementDTO savedStockMovementDTO = stockMovementMapper.toDto(stockMovement);
+      String stockMovementJson = objectMapper.writeValueAsString(savedStockMovementDTO);
+      kafkaProducerService.sendMessage("stock-movement-created-topic", stockMovementJson);
+      log.info("Stock movement created event published to Kafka");
+    } catch (JsonProcessingException e) {
+      log.error("Error while serializing stock movement data to JSON", e);
+    }
 
     return stockMovement;
   }
